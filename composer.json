@@ -1,0 +1,34 @@
+{
+    "name": "kusabi/collection",
+    "description": "A class wrapper for PHP native arrays",
+    "type": "library",
+    "license": "mit",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "keywords": [
+        "php",
+        "arrays",
+        "collection"
+    ],
+    "require": {
+        "php": ">=7.2",
+        "kusabi/arrays": "~1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "*",
+        "phan/phan": "*",
+        "phpunit/phpunit": "*",
+        "phpbench/phpbench": "*",
+        "symfony/var-dumper": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kusabi\\Collection\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kusabi\\Collection\\Tests\\": "tests/"
+        }
+    }
+}

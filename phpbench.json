@@ -1,0 +1,17 @@
+{
+    "runner.bootstrap": "vendor/autoload.php",
+    "runner.path": "benchmarks",
+    "runner.progress": "dots",
+    "storage.xml_storage_path": "coverage/bench",
+    "report.generators": {
+        "speed": {
+            "extends": "aggregate",
+            "cols": [
+                "benchmark",
+                "subject",
+                "mode",
+                "rstdev"
+            ]
+        }
+    }
+}
