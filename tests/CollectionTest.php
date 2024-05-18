@@ -12,13 +12,31 @@ class CollectionTest extends TestCase
      */
     public function testArray()
     {
-        $this->assertSame([1, 2, 3], Collection::array([1, 2, 3]));
+        $array = [
+            'a' => [
+                'b' => [
+                    'a' => 10,
+                    'b' => 11,
+                    'c' => 12,
+                ]
+            ]
+        ];
+        $collection = new Collection($array);
+        $this->assertSame($array, $collection->array());
+    }
 
-        $this->assertSame([1], Collection::array(1));
+    /**
+     * @covers \Kusabi\Collection\Collection::castArray()
+     */
+    public function testCastArray()
+    {
+        $this->assertSame([1, 2, 3], Collection::castArray([1, 2, 3]));
 
-        $this->assertSame(['h', 'e', 'l', 'l', 'o'], Collection::array('hello'));
+        $this->assertSame([1], Collection::castArray(1));
 
-        $this->assertSame([1, 2, 3, 4], Collection::array(new Collection([1, 2, 3, 4])));
+        $this->assertSame(['h', 'e', 'l', 'l', 'o'], Collection::castArray('hello'));
+
+        $this->assertSame([1, 2, 3, 4], Collection::castArray(new Collection([1, 2, 3, 4])));
     }
 
     /**
@@ -27,8 +45,8 @@ class CollectionTest extends TestCase
     public function testChangeCase()
     {
         $collection = new Collection(['FirSt' => 1, 'SecOnd' => 4]);
-        $this->assertSame(['first' => 1, 'second' => 4], $collection->changeKeyCase(CASE_LOWER)->getArray());
-        $this->assertSame(['FIRST' => 1, 'SECOND' => 4], $collection->changeKeyCase(CASE_UPPER)->getArray());
+        $this->assertSame(['first' => 1, 'second' => 4], $collection->changeKeyCase(CASE_LOWER)->array());
+        $this->assertSame(['FIRST' => 1, 'SECOND' => 4], $collection->changeKeyCase(CASE_UPPER)->array());
     }
 
     /**
@@ -86,8 +104,8 @@ class CollectionTest extends TestCase
                 'exp' => 1000
             ]
         ]);
-        $this->assertSame([50, 70], $collection->column('hp')->getArray());
-        $this->assertSame(['John' => 50, 'Jane' => 70], $collection->column('hp', 'name')->getArray());
+        $this->assertSame([50, 70], $collection->column('hp')->array());
+        $this->assertSame(['John' => 50, 'Jane' => 70], $collection->column('hp', 'name')->array());
     }
 
     /**
@@ -99,14 +117,14 @@ class CollectionTest extends TestCase
         $collection = new Collection(['x', 'y', 'z']);
         $array = ['a', 'b', 'c'];
         $combined = $collection->combine($array);
-        $this->assertSame(['x' => 'a', 'y' => 'b', 'z' => 'c'], $combined->getArray());
-        $this->assertSame(['x', 'y', 'z'], $collection->getArray());
+        $this->assertSame(['x' => 'a', 'y' => 'b', 'z' => 'c'], $combined->array());
+        $this->assertSame(['x', 'y', 'z'], $collection->array());
         $this->assertSame(['a', 'b', 'c'], $array);
 
         // Combine with collection
         $this->assertSame(
             ['x' => 'a', 'y' => 'b', 'z' => 'c'],
-            Collection::instance(['x', 'y', 'z'])->combine(Collection::instance(['a', 'b', 'c']))->getArray()
+            Collection::instance(['x', 'y', 'z'])->combine(Collection::instance(['a', 'b', 'c']))->array()
         );
     }
 
@@ -134,6 +152,20 @@ class CollectionTest extends TestCase
     }
 
     /**
+     * @covers \Kusabi\Collection\Collection::contains()
+     */
+    public function testContains()
+    {
+        $collection = new Collection([4, 5, 6]);
+        $this->assertSame(false, $collection->contains(1));
+        $this->assertSame(false, $collection->contains(2));
+        $this->assertSame(false, $collection->contains(3));
+        $this->assertSame(true, $collection->contains(4));
+        $this->assertSame(true, $collection->contains(5));
+        $this->assertSame(true, $collection->contains(6));
+    }
+
+    /**
      * @covers \Kusabi\Collection\Collection::count()
      */
     public function testCount()
@@ -157,7 +189,7 @@ class CollectionTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $appearances);
 
-        $this->assertSame([1 => 3, 2 => 2, 3 => 1, 4 => 1, 'a' => 2], $appearances->getArray());
+        $this->assertSame([1 => 3, 2 => 2, 3 => 1, 4 => 1, 'a' => 2], $appearances->array());
     }
 
     /**
@@ -177,13 +209,13 @@ class CollectionTest extends TestCase
                     'a' => 2
                 ]
             ]
-        ], $collection->getArray());
+        ], $collection->array());
 
         $deflated = $collection->deflate();
         $this->assertSame([
             'a.b.c' => 1,
             'a.c.a' => 2,
-        ], $deflated->getArray());
+        ], $deflated->array());
 
         $this->assertSame([
             'a' => [
@@ -194,7 +226,7 @@ class CollectionTest extends TestCase
                     'a' => 2
                 ]
             ]
-        ], $collection->getArray());
+        ], $collection->array());
 
         $this->assertNotSame($collection, $deflated);
     }
@@ -216,13 +248,13 @@ class CollectionTest extends TestCase
                     'a' => 2
                 ]
             ]
-        ], $collection->getArray());
+        ], $collection->array());
 
         $deflated = $collection->deflate(false);
         $this->assertSame([
             0 => 1,
             1 => 2,
-        ], $deflated->getArray());
+        ], $deflated->array());
 
         $this->assertSame([
             'a' => [
@@ -233,7 +265,7 @@ class CollectionTest extends TestCase
                     'a' => 2
                 ]
             ]
-        ], $collection->getArray());
+        ], $collection->array());
 
         $this->assertNotSame($collection, $deflated);
     }
@@ -248,11 +280,11 @@ class CollectionTest extends TestCase
         $c = [1, 2, 3, 12, 13];
         $d = [1, 2, 3];
 
-        $this->assertSame(array_diff($a, $b), Collection::instance($a)->diff($b)->getArray());
-        $this->assertSame(array_diff($a, $b, $c, $d), Collection::instance($a)->diff($b, $c, $d)->getArray());
-        $this->assertSame(array_diff($a, $b, $c, $d), Collection::instance($a)->diff($b, Collection::instance($c), Collection::instance($d))->getArray());
-        $this->assertSame(array_diff($a, $b, $c, $d), Collection::instance($a)->diff(Collection::instance($b), Collection::instance($c), Collection::instance($d))->getArray());
-        $this->assertSame(array_diff($a, $b), Collection::instance($a)->diff(Collection::instance($b))->getArray());
+        $this->assertSame(array_diff($a, $b), Collection::instance($a)->diff($b)->array());
+        $this->assertSame(array_diff($a, $b, $c, $d), Collection::instance($a)->diff($b, $c, $d)->array());
+        $this->assertSame(array_diff($a, $b, $c, $d), Collection::instance($a)->diff($b, Collection::instance($c), Collection::instance($d))->array());
+        $this->assertSame(array_diff($a, $b, $c, $d), Collection::instance($a)->diff(Collection::instance($b), Collection::instance($c), Collection::instance($d))->array());
+        $this->assertSame(array_diff($a, $b), Collection::instance($a)->diff(Collection::instance($b))->array());
     }
 
     /**
@@ -278,28 +310,39 @@ class CollectionTest extends TestCase
     }
 
     /**
+     * @covers \Kusabi\Collection\Collection::values()
+     */
+    public function testExtract()
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2]);
+        extract($collection->array());
+        $this->assertSame(1, $a);
+        $this->assertSame(2, $b);
+    }
+
+    /**
      * @covers \Kusabi\Collection\Collection::filter()
      */
     public function testFilter()
     {
         // No callback removes empty values
-        $this->assertSame([2 => 1, 4 => 2, 5 => 3], Collection::instance([null, '', 1, null, 2, 3, null])->filter()->getArray());
+        $this->assertSame([2 => 1, 4 => 2, 5 => 3], Collection::instance([null, '', 1, null, 2, 3, null])->filter()->array());
 
         // Callback
         $collection = Collection::range(1, 100)->filter(function ($value) {
             return $value < 10;
         });
-        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9], $collection->getArray());
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9], $collection->array());
 
         // String callback
         $collection = new Collection([1, 2, 'hello', null]);
-        $this->assertSame([2 => 'hello'], $collection->filter('is_string')->getArray());
+        $this->assertSame([2 => 'hello'], $collection->filter('is_string')->array());
 
         // Filter based on keys
         $collection = new Collection([9, 8, 7, 6, 5, 4, 3, 2, 1]);
         $this->assertSame([6 => 3, 7 => 2, 8 => 1], $collection->filter(function ($value, $key) {
             return $key > 5;
-        }, ARRAY_FILTER_USE_BOTH)->getArray());
+        }, ARRAY_FILTER_USE_BOTH)->array());
     }
 
     /**
@@ -356,35 +399,23 @@ class CollectionTest extends TestCase
         }));
     }
 
+    public function testFirstKey()
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+        $this->assertSame('a', $collection->keys()->first());
+    }
+
     /**
      * @covers \Kusabi\Collection\Collection::flip()
      */
     public function testFlip()
     {
         $collection = new Collection(['a', 'b', 'c']);
-        $this->assertSame(['a' => 0, 'b' => 1, 'c' => 2], $collection->flip()->getArray());
+        $this->assertSame(['a' => 0, 'b' => 1, 'c' => 2], $collection->flip()->array());
 
         $collection = new Collection(['a', 'b', 'c', 'a']);
-        $this->assertSame(['a' => 3, 'b' => 1, 'c' => 2], $collection->flip()->getArray());
-        $this->assertSame([3 => 'a', 1 => 'b', 2 => 'c'], $collection->flip()->flip()->getArray());
-    }
-
-    /**
-     * @covers \Kusabi\Collection\Collection::getArray()
-     */
-    public function testGetArray()
-    {
-        $array = [
-            'a' => [
-                'b' => [
-                    'a' => 10,
-                    'b' => 11,
-                    'c' => 12,
-                ]
-            ]
-        ];
-        $collection = new Collection($array);
-        $this->assertSame($array, $collection->getArray());
+        $this->assertSame(['a' => 3, 'b' => 1, 'c' => 2], $collection->flip()->array());
+        $this->assertSame([3 => 'a', 1 => 'b', 2 => 'c'], $collection->flip()->flip()->array());
     }
 
     /**
@@ -445,10 +476,10 @@ class CollectionTest extends TestCase
                     'c' => 1,
                 ]
             ]
-        ], $inflated->getArray());
+        ], $inflated->array());
         $this->assertSame([
             'a.b.c' => 1
-        ], $collection->getArray());
+        ], $collection->array());
         $this->assertNotSame($collection, $inflated);
     }
 
@@ -474,8 +505,8 @@ class CollectionTest extends TestCase
         $this->assertSame(2, $collection[1]);
         $this->assertSame(3, $collection[2]);
 
-        $this->assertSame(['h', 'e', 'l', 'l', 'o'], Collection::instance('hello')->getArray());
-        $this->assertSame([1], Collection::instance(1)->getArray());
+        $this->assertSame(['h', 'e', 'l', 'l', 'o'], Collection::instance('hello')->array());
+        $this->assertSame([1], Collection::instance(1)->array());
 
         $this->assertSame('olleh', Collection::instance('hello')->reverse()->implode());
     }
@@ -529,7 +560,7 @@ class CollectionTest extends TestCase
         $collection[] = 1;
         $collection['sudo'] = 1;
         $keys = $collection->keys();
-        $this->assertSame(['test', 0, 'sudo'], $keys->getArray());
+        $this->assertSame(['test', 0, 'sudo'], $keys->array());
 
         $collection = new Collection([
             'a' => 1,
@@ -540,8 +571,8 @@ class CollectionTest extends TestCase
                 'c' => 3,
             ],
         ]);
-        $this->assertSame(['a', 'b', 'c'], $collection->keys()->getArray());
-        $this->assertSame(['a', 'b', 'c.a', 'c.b', 'c.c'], $collection->keys(true)->getArray());
+        $this->assertSame(['a', 'b', 'c'], $collection->keys()->array());
+        $this->assertSame(['a', 'b', 'c.a', 'c.b', 'c.c'], $collection->keys(true)->array());
     }
 
     /**
@@ -598,6 +629,12 @@ class CollectionTest extends TestCase
         }));
     }
 
+    public function testLastKey()
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+        $this->assertSame('c', $collection->keys()->last());
+    }
+
     /**
      * @covers \Kusabi\Collection\Collection::map()
      */
@@ -627,7 +664,7 @@ class CollectionTest extends TestCase
             'c' => [
                 'z' => 'c.z-4',
             ],
-        ], $mapped->getArray());
+        ], $mapped->array());
     }
 
     /**
@@ -659,7 +696,7 @@ class CollectionTest extends TestCase
             'c' => [
                 'z' => 40,
             ],
-        ], $mapped->getArray());
+        ], $mapped->array());
     }
 
     /**
@@ -685,7 +722,7 @@ class CollectionTest extends TestCase
             'a' => 'a-1',
             'b' => 'b-2',
             'c' => 'c-3',
-        ], $mapped->getArray());
+        ], $mapped->array());
     }
 
     /**
@@ -711,7 +748,7 @@ class CollectionTest extends TestCase
             'a' => 10,
             'b' => 20,
             'c' => 30,
-        ], $mapped->getArray());
+        ], $mapped->array());
     }
 
     /**
@@ -779,14 +816,43 @@ class CollectionTest extends TestCase
     }
 
     /**
+     * @covers \Kusabi\Collection\Collection::pop()
+     */
+    public function testPop()
+    {
+        $collection = new Collection([1, 2, 3]);
+        $popped = $collection->pop();
+        $this->assertSame(3, $popped);
+        $this->assertSame([1, 2], $collection->array());
+
+        $collection = new Collection();
+        $popped = $collection->pop();
+        $this->assertSame(null, $popped);
+        $this->assertSame([], $collection->array());
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::push()
+     */
+    public function testPush()
+    {
+        $collection = new Collection([1, 2, 3]);
+        $collection->push(4);
+        $this->assertSame([1, 2, 3, 4], $collection->array());
+
+        $collection->push(5, 6, 7, 8);
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8], $collection->array());
+    }
+
+    /**
      * @covers \Kusabi\Collection\Collection::range()
      */
     public function testRange()
     {
-        $this->assertSame(range(1, 100), Collection::range(1, 100)->getArray());
-        $this->assertSame(range(1, 100, 20), Collection::range(1, 100, 20)->getArray());
-        $this->assertSame(range('a', 'z'), Collection::range('a', 'z')->getArray());
-        $this->assertSame([0, 2, 4, 6, 8, 10], Collection::range(0, 10, 2)->getArray());
+        $this->assertSame(range(1, 100), Collection::range(1, 100)->array());
+        $this->assertSame(range(1, 100, 20), Collection::range(1, 100, 20)->array());
+        $this->assertSame(range('a', 'z'), Collection::range('a', 'z')->array());
+        $this->assertSame([0, 2, 4, 6, 8, 10], Collection::range(0, 10, 2)->array());
     }
 
     /**
@@ -796,8 +862,8 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection(['a' => 1, 1 => 2, 'c' => 'd']);
         $reversed = $collection->reverse();
-        $this->assertSame(['c' => 'd', 1 => 2, 'a' => 1], $reversed->getArray());
-        $this->assertSame(['a' => 1, 1 => 2, 'c' => 'd'], $collection->getArray());
+        $this->assertSame(['c' => 'd', 1 => 2, 'a' => 1], $reversed->array());
+        $this->assertSame(['a' => 1, 1 => 2, 'c' => 'd'], $collection->array());
         $this->assertNotSame($collection, $reversed);
     }
 
@@ -822,6 +888,22 @@ class CollectionTest extends TestCase
     }
 
     /**
+     * @covers \Kusabi\Collection\Collection::shift()
+     */
+    public function testShift()
+    {
+        $collection = new Collection([1, 2, 3]);
+        $shifted = $collection->shift();
+        $this->assertSame(1, $shifted);
+        $this->assertSame([2, 3], $collection->array());
+
+        $collection = new Collection();
+        $popped = $collection->shift();
+        $this->assertSame(null, $popped);
+        $this->assertSame([], $collection->array());
+    }
+
+    /**
      * @covers \Kusabi\Collection\Collection::sum()
      */
     public function testSum()
@@ -841,5 +923,27 @@ class CollectionTest extends TestCase
         $this->assertFalse(isset($collection['b']));
         unset($collection['a']);
         $this->assertFalse(isset($collection['a']));
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::unshift()
+     */
+    public function testUnshift()
+    {
+        $collection = new Collection([1, 2, 3]);
+        $collection->unshift(4);
+        $this->assertSame([4, 1, 2, 3], $collection->array());
+
+        $collection->unshift(5, 6, 7, 8);
+        $this->assertSame([5, 6, 7, 8, 4, 1, 2, 3], $collection->array());
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::values()
+     */
+    public function testValues()
+    {
+        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+        $this->assertSame([1, 2, 3], $collection->values()->array());
     }
 }

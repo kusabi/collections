@@ -125,6 +125,9 @@ echo $collection[1]; // 2
 echo count($collection); // 5
 echo $collection->count(); // 5
 
+// Get the underlying array
+$array = $collection->array();
+
 
 ```
 
@@ -305,12 +308,18 @@ $collection->exists('c.z'); // false
 
 **[array_key_first](https://www.php.net/manual/en/function.array-key-first.php)** Gets the first key of an array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+echo $collection->keys()->first(); // 'a'
 ```
 
 **[array_key_last](https://www.php.net/manual/en/function.array-key-last.php)** Gets the last key of an array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+echo $collection->keys()->last(); // 'c'
 ```
 
 **[array_keys](https://www.php.net/manual/en/function.array-keys.php)** Return all the keys or a subset of the keys of an array
@@ -373,7 +382,11 @@ $concatenatedKeys = $collection->map(function ($value, $key) {
 
 **[array_pop](https://www.php.net/manual/en/function.array-pop.php)** Pop the element off the end of array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([1, 2, 3, 4]);
+$popped = $collection->pop(); // [1, 2, 3]
+echo $popped; // 4
 ```
 
 **[array_product](https://www.php.net/manual/en/function.array-product.php)** Calculate the product of values in an array
@@ -383,7 +396,10 @@ $concatenatedKeys = $collection->map(function ($value, $key) {
 
 **[array_push](https://www.php.net/manual/en/function.array-push.php)** Push one or more elements onto the end of array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([1, 2, 3, 4]);
+$collection->push(5, 6, 7, 8); // [1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
 **[array_rand](https://www.php.net/manual/en/function.array-rand.php)** Pick one or more random keys out of an array
@@ -426,7 +442,11 @@ $reversedCopy = $collection->reverse(); // ['c' => 3, 'b' => 2, 'a' => 1]
 
 **[array_shift](https://www.php.net/manual/en/function.array-shift.php)** Shift an element off the beginning of array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([1, 2, 3, 4]);
+$shifted = $collection->shift(); // [2, 3, 4]
+echo $shifted; // 1
 ```
 
 **[array_slice](https://www.php.net/manual/en/function.array-slice.php)** Extract a slice of the array
@@ -484,12 +504,18 @@ $sum = Collection::range(1, 100)->sum(); // 5050
 
 **[array_unshift](https://www.php.net/manual/en/function.array-unshift.php)** Prepend one or more elements to the beginning of an array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([1, 2, 3, 4]);
+$collection->unshift(5, 6, 7, 8); // [5, 6, 7, 8, 1, 2, 3, 4]
 ```
 
 **[array_values](https://www.php.net/manual/en/function.array-values.php)** Return all the values of an array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+$collection->values(5, 6, 7, 8); // [1, 2, 3]
 ```
 
 **[array_walk_recursive](https://www.php.net/manual/en/function.array-walk-recursive.php)** Apply a user function recursively to every member of an array
@@ -547,24 +573,46 @@ $collection->count(); // 3
 
 **[extract](https://www.php.net/manual/en/function.extract.php)** Import variables into the current symbol table from an array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection(['a' => 1, 'b' => 2]);
+extract($collection->array()); // No way to get the new variables into the caller scope. If we have collection->extract() then the variables will be created into the method scope
 ```
 
 **[implode](https://www.php.net/manual/en/function.implode.php)** Join array elements with a string
 ```php
 use Kusabi\Collection\Collection;
+
 echo Collection::instance('a', 'b', 'c')->implode(', '); // "a, b, c"
 echo Collection::instance('a', 'b', 'c')->implode(', ', ' and '); // "a, b and c"
 ```
 
 **[in_array](https://www.php.net/manual/en/function.in-array.php)** Checks if a value exists in an array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([4, 5, 6]);
+$collection->contains(5);
 ```
 
 **[key_exists](https://www.php.net/manual/en/function.key-exists.php)** Alias of array_key_exists
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([
+    'a' => 1,
+    'b' => 2,
+    'c' => [
+        'a' => 1,
+        'b' => null,
+        'c' => 3,
+    ],
+]);
+$collection->exists('a'); // true
+$collection->exists('z'); // false
+$collection->exists('c.a'); // true
+$collection->exists('c.b'); // true
+$collection->exists('c.z'); // false
 ```
 
 **[key](https://www.php.net/manual/en/function.key.php)** Fetch a key from an array

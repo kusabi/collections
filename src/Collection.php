@@ -33,10 +33,10 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see array_from()
      */
-    public static function array($input): array
+    public static function castArray($input): array
     {
         if ($input instanceof self) {
-            return $input->getArray();
+            return $input->array();
         }
         return array_from($input);
     }
@@ -50,7 +50,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public static function instance($data = []): self
     {
-        return new static(static::array($data));
+        return new static(static::castArray($data));
     }
 
     /**
@@ -67,6 +67,16 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public static function range($start, $end, $step = 1): self
     {
         return new static(range($start, $end, $step));
+    }
+
+    /**
+     * Get the underlying array
+     *
+     * @return array
+     */
+    public function array(): array
+    {
+        return $this->data;
     }
 
     /**
@@ -127,7 +137,22 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function combine(iterable $other): self
     {
-        return new static(array_combine($this->data, static::array($other)));
+        return new static(array_combine($this->data, static::castArray($other)));
+    }
+
+    /**
+     * Checks if a value exists in the collection
+     *
+     * @param mixed $needle
+     * @param bool $strict
+     *
+     * @return bool
+     *
+     * @see in_array()
+     */
+    public function contains($needle, bool $strict = false): bool
+    {
+        return in_array($needle, $this->data, $strict);
     }
 
     /**
@@ -177,12 +202,9 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function diff(...$others): self
     {
-        foreach ($others as &$other) {
-            if ($other instanceof Collection) {
-                $other = $other->getArray();
-            }
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
         }
-        unset($other);
         $other = array_shift($others);
         return new static(array_diff($this->data, $other, ...$others));
     }
@@ -252,16 +274,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function flip(): self
     {
         return new static(array_flip($this->data));
-    }
-
-    /**
-     * Get the underlying array
-     *
-     * @return array
-     */
-    public function getArray(): array
-    {
-        return $this->data;
     }
 
     /**
@@ -430,6 +442,35 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Pop the last item from the collection
+     *
+     * @return mixed|null
+     *
+     * @see array_pop()
+     */
+    public function pop()
+    {
+        return array_pop($this->data);
+    }
+
+    /**
+     * Push items onto the end of the collection
+     *
+     * @param ...$values
+     *
+     * @return static
+     *
+     * @see array_push()
+     */
+    public function push(...$values): self
+    {
+        foreach ($values as $value) {
+            $this->data[] = $value;
+        }
+        return $this;
+    }
+
+    /**
      * Reverse the items in to a new collection
      *
      * @return static
@@ -437,6 +478,18 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function reverse(): self
     {
         return new static(array_reverse($this->data, true));
+    }
+
+    /**
+     * Shift the first item from the collection
+     *
+     * @return mixed|null
+     *
+     * @see array_shift()
+     */
+    public function shift()
+    {
+        return array_shift($this->data);
     }
 
     /**
@@ -449,5 +502,33 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function sum()
     {
         return array_sum($this->data);
+    }
+
+    /**
+     * Prepend one or more items to the beginning of the collection.
+     *
+     * @param  ...$values
+     *
+     * @return static
+     *
+     * @see array_unshift()
+     */
+    public function unshift(...$values): self
+    {
+        /** @phan-suppress-next-line PhanParamTooFewInternalUnpack */
+        array_unshift($this->data, ...$values);
+        return $this;
+    }
+
+    /**
+     * Return a new collection of just the values
+     *
+     * @return static
+     *
+     * @see array_values()
+     */
+    public function values(): self
+    {
+        return new static(array_values($this->data));
     }
 }
