@@ -409,7 +409,11 @@ $collection->push(5, 6, 7, 8); // [1, 2, 3, 4, 5, 6, 7, 8]
 
 **[array_reduce](https://www.php.net/manual/en/function.array-reduce.php)** Iteratively reduce the array to a single value using a callback function
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$ten_factorial = Collection::range(1, 10)->reduce(function ($carry, $value) {
+    return $carry * $value;
+}, 1); // 3628800
 ```
 
 **[array_replace_recursive](https://www.php.net/manual/en/function.array-replace-recursive.php)** Replaces elements from passed arrays into the first array recursively

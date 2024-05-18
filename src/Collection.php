@@ -471,6 +471,21 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Iteratively reduce the collection to a single value using a callback function
+     *
+     * @param callable $callback
+     * @param null $initial
+     *
+     * @return mixed
+     *
+     * @see array_reduce()
+     */
+    public function reduce(callable $callback, $initial = null)
+    {
+        return array_reduce($this->data, $callback, $initial);
+    }
+
+    /**
      * Reverse the items in to a new collection
      *
      * @return static

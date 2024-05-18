@@ -856,6 +856,16 @@ class CollectionTest extends TestCase
     }
 
     /**
+     * @covers \Kusabi\Collection\Collection::reduce()
+     */
+    public function testReduce()
+    {
+        $this->assertSame(3628800, Collection::range(1, 10)->reduce(function ($carry, $value) {
+            return $carry * $value;
+        }, 1));
+    }
+
+    /**
      * @covers \Kusabi\Collection\Collection::reverse()
      */
     public function testReverse()
