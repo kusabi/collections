@@ -171,7 +171,11 @@ $hps = $collection->column('hp', 'name'); // ['John' => 50, 'Jane' => 70]
 
 **[array_combine](https://www.php.net/manual/en/function.array-combine.php)** Creates an array by using one array for keys and another for its values
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$keys = new Collection(['a', 'b', 'c'])
+$combinedWithArray = $keys->combine(['x', 'y', 'z']);
+$combinedWithCollection = $keys->combine(new Collection(['x', 'y', 'z']));
 ```
 
 **[array_count_values](https://www.php.net/manual/en/function.array-count-values.php)** Counts all the values of an array

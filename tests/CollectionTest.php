@@ -8,6 +8,20 @@ use PHPUnit\Framework\TestCase;
 class CollectionTest extends TestCase
 {
     /**
+     * @covers \Kusabi\Collection\Collection::array()
+     */
+    public function testArray()
+    {
+        $this->assertSame([1, 2, 3], Collection::array([1, 2, 3]));
+
+        $this->assertSame([1], Collection::array(1));
+
+        $this->assertSame(['h', 'e', 'l', 'l', 'o'], Collection::array('hello'));
+
+        $this->assertSame([1, 2, 3, 4], Collection::array(new Collection([1, 2, 3, 4])));
+    }
+
+    /**
      * @covers \Kusabi\Collection\Collection::changeKeyCase()
      */
     public function testChangeCase()
@@ -74,6 +88,26 @@ class CollectionTest extends TestCase
         ]);
         $this->assertSame([50, 70], $collection->column('hp')->getArray());
         $this->assertSame(['John' => 50, 'Jane' => 70], $collection->column('hp', 'name')->getArray());
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::combine()
+     */
+    public function testCombine()
+    {
+        // Combine with array
+        $collection = new Collection(['x', 'y', 'z']);
+        $array = ['a', 'b', 'c'];
+        $combined = $collection->combine($array);
+        $this->assertSame(['x' => 'a', 'y' => 'b', 'z' => 'c'], $combined->getArray());
+        $this->assertSame(['x', 'y', 'z'], $collection->getArray());
+        $this->assertSame(['a', 'b', 'c'], $array);
+
+        // Combine with collection
+        $this->assertSame(
+            ['x' => 'a', 'y' => 'b', 'z' => 'c'],
+            Collection::instance(['x', 'y', 'z'])->combine(Collection::instance(['a', 'b', 'c']))->getArray()
+        );
     }
 
     /**
@@ -439,6 +473,11 @@ class CollectionTest extends TestCase
         $this->assertSame(1, $collection[0]);
         $this->assertSame(2, $collection[1]);
         $this->assertSame(3, $collection[2]);
+
+        $this->assertSame(['h', 'e', 'l', 'l', 'o'], Collection::instance('hello')->getArray());
+        $this->assertSame([1], Collection::instance(1)->getArray());
+
+        $this->assertSame('olleh', Collection::instance('hello')->reverse()->implode());
     }
 
     /**

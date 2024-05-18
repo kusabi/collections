@@ -25,15 +25,32 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Chainable constructor
+     * Attempt to convert the input into an array
      *
-     * @param array $data
+     * @param $input
+     *
+     * @return array
+     *
+     * @see array_from()
+     */
+    public static function array($input): array
+    {
+        if ($input instanceof self) {
+            return $input->getArray();
+        }
+        return array_from($input);
+    }
+
+    /**
+     * Chainable constructor that attempts to be smart about the input parameter
+     *
+     * @param mixed $data
      *
      * @return static
      */
-    public static function instance(array $data = []): self
+    public static function instance($data = []): self
     {
-        return new static($data);
+        return new static(static::array($data));
     }
 
     /**
@@ -100,9 +117,23 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Create a new collection using this collection's values as keys, and other values as values
+     *
+     * @param iterable $other
+     *
+     * @return static
+     *
+     * @see array_combine()
+     */
+    public function combine(iterable $other): self
+    {
+        return new static(array_combine($this->data, static::array($other)));
+    }
+
+    /**
      * {@inheritDoc}
      *
-     * @see \Countable::count()
+     * @see Countable::count
      */
     public function count(): int
     {
@@ -236,7 +267,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritDoc}
      *
-     * @see \IteratorAggregate::getIterator()
+     * @see IteratorAggregate::getIterator
      */
     public function getIterator()
     {
@@ -249,11 +280,11 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      * If a lastGlue is used then the last item will use a different glue string
      *
      * @param string $glue
-     * @param string $lastGlue
+     * @param string|null $lastGlue
      *
      * @return string
      */
-    public function implode($glue = '', $lastGlue = null): string
+    public function implode(string $glue = '', string $lastGlue = null): string
     {
         return array_join($this->data, $glue, $lastGlue);
     }
@@ -357,7 +388,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritDoc}
      *
-     * @see \ArrayAccess::offsetExists()
+     * @see ArrayAccess::offsetExists
      */
     public function offsetExists($offset): bool
     {
@@ -367,7 +398,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritDoc}
      *
-     * @see \ArrayAccess::offsetGet()
+     * @see ArrayAccess::offsetGet
      */
     public function offsetGet($offset)
     {
@@ -377,7 +408,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritDoc}
      *
-     * @see \ArrayAccess::offsetSet()
+     * @see ArrayAccess::offsetSet
      */
     public function offsetSet($offset, $value)
     {
@@ -391,7 +422,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritDoc}
      *
-     * @see \ArrayAccess::offsetUnset()
+     * @see ArrayAccess::offsetUnset
      */
     public function offsetUnset($offset)
     {
