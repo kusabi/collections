@@ -377,7 +377,10 @@ $concatenatedKeys = $collection->map(function ($value, $key) {
 
 **[array_pad](https://www.php.net/manual/en/function.array-pad.php)** Pad array to the specified length with a value
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$a = new Collection([1, 2, 3]);
+$b = $a->pad(10, 'a'); // [1, 2, 3, 'a', 'a', 'a', 'a', 'a', 'a', 'a']
 ```
 
 **[array_pop](https://www.php.net/manual/en/function.array-pop.php)** Pop the element off the end of array

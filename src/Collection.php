@@ -442,6 +442,21 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Pad collection to the specified length with a value
+     *
+     * @param int $length
+     * @param $value
+     *
+     * @return static
+     *
+     * @see array_pad()
+     */
+    public function pad(int $length, $value = null): self
+    {
+        return new static(array_pad($this->data, $length, $value));
+    }
+
+    /**
      * Pop the last item from the collection
      *
      * @return mixed|null
