@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1']
+        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.1', '8.2']
     steps:
 
       # Set up the correct PHP version
@@ -44,10 +44,11 @@ jobs:
 
       # Run unit tests with code coverage
       - name: Run phpunit
-        run: vendor/bin/phpunit --coverage-clover=coverage/coverage.xml
+        run: vendor/bin/phpunit --coverage-clover=coverage/coverage.xml || vendor/bin/phpunit --migrate-configuration --coverage-clover=coverage/coverage.xml
 
       # Upload the code coverage artifact
       - name: Upload code coverage artifact
+        if: ${{ matrix.php-version == '7.2' }}
         uses: actions/upload-artifact@v1
         with:
           name: coverage
