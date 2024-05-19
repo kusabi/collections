@@ -288,6 +288,40 @@ class CollectionTest extends TestCase
     }
 
     /**
+     * @covers \Kusabi\Collection\Collection::diffAssoc()
+     */
+    public function testDiffAssoc()
+    {
+        $a = [1, 2, 3, 5, 6, 7, 8, 9, 10];
+        $b = [6, 7, 8, 9, 10, 11, 12, 13];
+        $c = [1, 2, 3, 12, 13];
+        $d = [1, 2, 3];
+
+        $this->assertSame(array_diff_assoc($a, $b), Collection::instance($a)->diffAssoc($b)->array());
+        $this->assertSame(array_diff_assoc($a, $b, $c, $d), Collection::instance($a)->diffAssoc($b, $c, $d)->array());
+        $this->assertSame(array_diff_assoc($a, $b, $c, $d), Collection::instance($a)->diffAssoc($b, Collection::instance($c), Collection::instance($d))->array());
+        $this->assertSame(array_diff_assoc($a, $b, $c, $d), Collection::instance($a)->diffAssoc(Collection::instance($b), Collection::instance($c), Collection::instance($d))->array());
+        $this->assertSame(array_diff_assoc($a, $b), Collection::instance($a)->diffAssoc(Collection::instance($b))->array());
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::diffKeys()
+     */
+    public function testDiffKeys()
+    {
+        $a = [1, 2, 3, 5, 6, 7, 8, 9, 10];
+        $b = [6, 7, 8, 9, 10, 11, 12, 13];
+        $c = [1, 2, 3, 12, 13];
+        $d = [1, 2, 3];
+
+        $this->assertSame(array_diff_key($a, $b), Collection::instance($a)->diffKeys($b)->array());
+        $this->assertSame(array_diff_key($a, $b, $c, $d), Collection::instance($a)->diffKeys($b, $c, $d)->array());
+        $this->assertSame(array_diff_key($a, $b, $c, $d), Collection::instance($a)->diffKeys($b, Collection::instance($c), Collection::instance($d))->array());
+        $this->assertSame(array_diff_key($a, $b, $c, $d), Collection::instance($a)->diffKeys(Collection::instance($b), Collection::instance($c), Collection::instance($d))->array());
+        $this->assertSame(array_diff_key($a, $b), Collection::instance($a)->diffKeys(Collection::instance($b))->array());
+    }
+
+    /**
      * @covers \Kusabi\Collection\Collection::exists()
      */
     public function testExists()
@@ -318,6 +352,25 @@ class CollectionTest extends TestCase
         extract($collection->array());
         $this->assertSame(1, $a);
         $this->assertSame(2, $b);
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::fill()
+     */
+    public function testFill()
+    {
+        $this->assertSame(array_fill(0, 20, 'a'), Collection::fill(0, 20, 'a')->array());
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::slice()
+     */
+    public function testSlice()
+    {
+        $collection = Collection::range('a', 'j')->combine(Collection::range(1, 10)->reverse());
+        $bcd = $collection->slice(1, 3);
+        $this->assertSame(['a' => 10, 'b' => 9, 'c' => 8, 'd' => 7, 'e' => 6, 'f' => 5, 'g' => 4, 'h' => 3, 'i' => 2, 'j' => 1], $collection->array());
+        $this->assertSame(['b' => 9, 'c' => 8, 'd' => 7], $bcd->array());
     }
 
     /**

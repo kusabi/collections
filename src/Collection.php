@@ -42,6 +42,22 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Create a new collection filled to a certain size with a value
+     *
+     * @param int $start_index
+     * @param int $count
+     * @param $value
+     *
+     * @return static
+     *
+     * @see array_fill()
+     */
+    public static function fill(int $start_index, int $count, $value): self
+    {
+        return new static(array_fill($start_index, $count, $value));
+    }
+
+    /**
      * Chainable constructor that attempts to be smart about the input parameter
      *
      * @param mixed $data
@@ -207,6 +223,42 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         }
         $other = array_shift($others);
         return new static(array_diff($this->data, $other, ...$others));
+    }
+
+    /**
+     * Computes the difference between other collections or arrays with additional index check
+     *
+     * @param mixed ...$others
+     *
+     * @return static
+     *
+     * @see array_diff_assoc()
+     */
+    public function diffAssoc(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $other = array_shift($others);
+        return new static(array_diff_assoc($this->data, $other, ...$others));
+    }
+
+    /**
+     * Computes the difference between other collections or arrays using keys for comparison
+     *
+     * @param mixed ...$others
+     *
+     * @return static
+     *
+     * @see array_diff_key()
+     */
+    public function diffKeys(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $other = array_shift($others);
+        return new static(array_diff_key($this->data, $other, ...$others));
     }
 
     /**
@@ -520,6 +572,18 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function shift()
     {
         return array_shift($this->data);
+    }
+
+    /**
+     * Extract a slice of the collection
+     *
+     * @return static
+     *
+     * @see array_slice()
+     */
+    public function slice(int $offset, int $length = null, bool $preserve_keys = true): self
+    {
+        return new static(array_slice($this->data, $offset, $length, $preserve_keys));
     }
 
     /**

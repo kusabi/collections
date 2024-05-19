@@ -192,12 +192,20 @@ $appearances = $collection->countValues(); // [1 => 3, 2 => 2, 3 => 1, 4 => 1, '
 
 **[array_diff_assoc](https://www.php.net/manual/en/function.array-diff-assoc.php)** Computes the difference of arrays with additional index check
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([1, 2, 3, 4, 5, 6]);
+$diff = $collection->diffAssoc([3, 4, 5]);
+$diff = $collection->diffAssoc(new Collection([3, 4, 5]));
 ```
 
 **[array_diff_key](https://www.php.net/manual/en/function.array-diff-key.php)** Computes the difference of arrays using keys for comparison
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([1, 2, 3, 4, 5, 6]);
+$diff = $collection->diffKeys([3, 4, 5]);
+$diff = $collection->diffKeys(new Collection([3, 4, 5]));
 ```
 
 **[array_diff_uassoc](https://www.php.net/manual/en/function.array-diff-uassoc.php)** Computes the difference of arrays with additional index check which is performed by a user supplied callback function
@@ -226,7 +234,9 @@ $diff = $collection->diff(new Collection([3, 4, 5]));
 
 **[array_fill](https://www.php.net/manual/en/function.array-fill.php)** Fill an array with values
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = Collection::fill(0, 10, 'a'); // ['a','a','a','a','a','a','a','a','a','a']
 ```
 
 **[array_filter](https://www.php.net/manual/en/function.array-filter.php)** Filters elements of an array using a callback function
@@ -458,7 +468,9 @@ echo $shifted; // 1
 
 **[array_slice](https://www.php.net/manual/en/function.array-slice.php)** Extract a slice of the array
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::range('a', 'j')->slice(2, 4); // ['c', 'd']
 ```
 
 **[array_splice](https://www.php.net/manual/en/function.array-splice.php)** Remove a portion of the array and replace it with something else
