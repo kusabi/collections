@@ -287,7 +287,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see array_filter()
      */
-    public function filter(callable $callback = null, int $mode = 0): self
+    public function filter(?callable $callback = null, int $mode = 0): self
     {
         if ($callback === null) {
             return new static(array_filter($this->data));
@@ -307,7 +307,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return mixed
      */
-    public function first(callable $callback = null, $default = null)
+    public function first(?callable $callback = null, $default = null)
     {
         foreach ($this->data as $key => $value) {
             if ($callback === null || $callback($value, $key) === true) {
@@ -348,7 +348,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return string
      */
-    public function implode(string $glue = '', string $lastGlue = null): string
+    public function implode(string $glue = '', ?string $lastGlue = null): string
     {
         return array_join($this->data, $glue, $lastGlue);
     }
@@ -416,7 +416,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see Collection::first()
      */
-    public function last(callable $callback = null, $default = null)
+    public function last(?callable $callback = null, $default = null)
     {
         return $this->reverse()->first($callback, $default);
     }
@@ -581,7 +581,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see array_slice()
      */
-    public function slice(int $offset, int $length = null, bool $preserve_keys = true): self
+    public function slice(int $offset, ?int $length = null, bool $preserve_keys = true): self
     {
         return new static(array_slice($this->data, $offset, $length, $preserve_keys));
     }

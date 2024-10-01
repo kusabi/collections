@@ -1,0 +1,6 @@
+# Ignore during release builds
+* export-ignore
+/src/ -export-ignore
+/src/** -export-ignore
+composer.json -export-ignore
+licence -export-ignore

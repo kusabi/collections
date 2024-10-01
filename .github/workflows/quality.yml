@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.1', '8.2']
+        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.1', '8.2', '8.3', '8.4']
     steps:
 
       # Set up the correct PHP version
@@ -49,7 +49,7 @@ jobs:
       # Upload the code coverage artifact
       - name: Upload code coverage artifact
         if: ${{ matrix.php-version == '7.2' }}
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/coverage.xml
@@ -103,10 +103,10 @@ jobs:
 
       # Download the coverage artifact
       - name: Download code coverage artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: coverage
 
       # Upload coverage artifact
       - name: Upload code coverage
-        run: bash <(curl -s https://codecov.io/bash) -Z -t ${{ secrets.CODECOV_TOKEN }} -f coverage/coverage.xml
+        run: bash <(curl -s https://codecov.io/bash) -Z -t ${{ secrets.CODECOV_TOKEN }} -f coverage.xml
