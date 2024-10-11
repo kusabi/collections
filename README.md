@@ -14,7 +14,8 @@
 
 This library is compatible with PHP version `7.2`, `7.3`, `7.4`, `8.0`, `8.1`, `8.2`, `8.3` and `8.4`.
 
-This library has no dependencies.
+This library depends on
+ - [`"kusabi/arrays": "^1.0"`](https://github.com/kusabi/arrays)
 
 ## Installation
 
