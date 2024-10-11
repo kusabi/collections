@@ -450,6 +450,24 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Merge in other collections or arrays
+     *
+     * @param ...$others
+     *
+     * @return static
+     *
+     * @see array_merge()
+     */
+    public function merge(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $this->data = array_merge($this->data, ...$others);
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @see ArrayAccess::offsetExists

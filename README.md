@@ -378,7 +378,15 @@ $concatenatedKeys = $collection->map(function ($value, $key) {
 
 **[array_merge](https://www.php.net/manual/en/function.array-merge.php)** Merge one or more arrays
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$a = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+$b = ['c' => 99, 'd' => 98, 'e' => 97];
+$a->merge($b); // ['a' => 1, 'b' => 2, 'c' => 99, 'd' => 98, 'e' => 97]
+
+$a = new Collection(['a' => 1, 'b' => 2, 'c' => 3]);
+$b = new Collection(['c' => 99, 'd' => 98, 'e' => 97]);
+$a->merge($b); // ['a' => 1, 'b' => 2, 'c' => 99, 'd' => 98, 'e' => 97]
 ```
 
 **[array_multisort](https://www.php.net/manual/en/function.array-multisort.php)** Sort multiple or multi-dimensional arrays
