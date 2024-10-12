@@ -195,42 +195,68 @@ $appearances = $collection->countValues(); // [1 => 3, 2 => 2, 3 => 1, 4 => 1, '
 ```php
 use Kusabi\Collection\Collection;
 
-$collection = new Collection([1, 2, 3, 4, 5, 6]);
-$diff = $collection->diffAssoc([3, 4, 5]);
-$diff = $collection->diffAssoc(new Collection([3, 4, 5]));
+Collection::instance([1, 2, 3, 4, 5, 6])->diffValuesAndKeys([3, 4, 5]); // [1, 2, 3, 4, 5, 6] keys and values not matching so all entries are different
+
+Collection::instance(['a' => 1, 'b' => 2, 'c' => 3])->diffValuesAndKeys(['a' => 10, 'b' => 2, 'd' => 3]); // ['a' => 1, 'c' => 3] only one matches on both key and value, all others are different
 ```
 
 **[array_diff_key](https://www.php.net/manual/en/function.array-diff-key.php)** Computes the difference of arrays using keys for comparison
 ```php
 use Kusabi\Collection\Collection;
 
-$collection = new Collection([1, 2, 3, 4, 5, 6]);
-$diff = $collection->diffKeys([3, 4, 5]);
-$diff = $collection->diffKeys(new Collection([3, 4, 5]));
+Collection::instance([1, 2, 3, 4, 5, 6])->diffKeys([3, 4, 5]); // [3 => 4, 4 => 5, 5 => 6]
 ```
 
 **[array_diff_uassoc](https://www.php.net/manual/en/function.array-diff-uassoc.php)** Computes the difference of arrays with additional index check which is performed by a user supplied callback function
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$a = ['alpha' => 1, 'beta' => 2, 'gamma' => 3];
+$b = ['alpha' => 10, 'banana' => 2, 'gamma' => 3];
+
+// Alpha should not match because keys are the same but values are not
+// Beta/banana would not normally match because values are the same but keys are different
+// gamma will match because key and value both match
+
+$key_compare_function = function ($a, $b) {
+    // Take only the first letter of the key
+    $a = substr($a, 0, 1);
+    $b = substr($b, 0, 1);
+    return $a <=> $b;
+};
+
+// because the key compare function only checks the first letter
+// all the keys will match as it will think they are all a, b and c
+// So now...
+// 'a' should not match because keys are the same but values are not
+// 'b' will match because keys and values are the same
+// 'g' will match because keys and values are the same
+Collection::instance($a)->diffValuesAndKeysCallback($key_compare_function, $b); // ['a' => 1']
 ```
 
 **[array_diff_ukey](https://www.php.net/manual/en/function.array-diff-ukey.php)** Computes the difference of arrays using a callback function on the keys for comparison
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance(['a' => 1, 'b' => 2, 'c' => 3, 'z_something' => 50])->diffKeysCallback(function ($a, $b) {
+    // Take only the first letter of the key
+    $a = substr($a, 0, 1);
+    $b = substr($b, 0, 1);
+    return $a <=> $b;
+}, ['b' => 22, 'c' => 33, 'd' => 44, 'z_else' => 500]); // ['a' => 1]
 ```
 
 **[array_diff](https://www.php.net/manual/en/function.array-diff.php)** Computes the difference of arrays
 ```php
 use Kusabi\Collection\Collection;
 
-$collection = new Collection([1, 2, 3, 4, 5, 6]);
-$diff = $collection->diff([3, 4, 5]);
-$diff = $collection->diff(new Collection([3, 4, 5]));
+Collection::instance([1, 2, 3, 4, 5, 6])->diffValues([3, 4, 5]); // [0 => 1, 1 => 2, 5 => 6] Keys are kept
+Collection::instance([1, 2, 3, 4, 5, 6])->diffValues([3, 4, 5])->values(); // [1, 2, 5, 6]
 ```
 
 **[array_fill_keys](https://www.php.net/manual/en/function.array-fill-keys.php)** Fill an array with values, specifying keys
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_fill](https://www.php.net/manual/en/function.array-fill.php)** Fill an array with values
@@ -410,7 +436,7 @@ $concatenatedKeys = $collection->map(function ($value, $key) {
 
 **[array_merge_recursive](https://www.php.net/manual/en/function.array-merge-recursive.php)** Merge one or more arrays recursively
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_merge](https://www.php.net/manual/en/function.array-merge.php)** Merge one or more arrays
@@ -428,7 +454,7 @@ $a->merge($b); // ['a' => 1, 'b' => 2, 'c' => 99, 'd' => 98, 'e' => 97]
 
 **[array_multisort](https://www.php.net/manual/en/function.array-multisort.php)** Sort multiple or multi-dimensional arrays
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_pad](https://www.php.net/manual/en/function.array-pad.php)** Pad array to the specified length with a value
@@ -450,7 +476,7 @@ echo $popped; // 4
 
 **[array_product](https://www.php.net/manual/en/function.array-product.php)** Calculate the product of values in an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_push](https://www.php.net/manual/en/function.array-push.php)** Push one or more elements onto the end of array
@@ -463,7 +489,7 @@ $collection->push(5, 6, 7, 8); // [1, 2, 3, 4, 5, 6, 7, 8]
 
 **[array_rand](https://www.php.net/manual/en/function.array-rand.php)** Pick one or more random keys out of an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_reduce](https://www.php.net/manual/en/function.array-reduce.php)** Iteratively reduce the array to a single value using a callback function
@@ -477,12 +503,12 @@ $ten_factorial = Collection::range(1, 10)->reduce(function ($carry, $value) {
 
 **[array_replace_recursive](https://www.php.net/manual/en/function.array-replace-recursive.php)** Replaces elements from passed arrays into the first array recursively
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_replace](https://www.php.net/manual/en/function.array-replace.php)** Replaces elements from passed arrays into the first array
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_reverse](https://www.php.net/manual/en/function.array-reverse.php)** Return an array with elements in reverse order
@@ -500,7 +526,7 @@ $reversedCopy = $collection->reverse(); // ['c' => 3, 'b' => 2, 'a' => 1]
 
 **[array_search](https://www.php.net/manual/en/function.array-search.php)** Searches the array for a given value and returns the first corresponding key if successful
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_shift](https://www.php.net/manual/en/function.array-shift.php)** Shift an element off the beginning of array
@@ -521,7 +547,7 @@ Collection::range('a', 'j')->slice(2, 4); // ['c', 'd']
 
 **[array_splice](https://www.php.net/manual/en/function.array-splice.php)** Remove a portion of the array and replace it with something else
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_sum](https://www.php.net/manual/en/function.array-sum.php)** Calculate the sum of values in an array
@@ -534,37 +560,37 @@ $sum = Collection::range(1, 100)->sum(); // 5050
 
 **[array_udiff_assoc](https://www.php.net/manual/en/function.array-udiff-assoc.php)** Computes the difference of arrays with additional index check, compares data by a callback function
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_udiff_uassoc](https://www.php.net/manual/en/function.array-udiff-uassoc.php)** Computes the difference of arrays with additional index check, compares data and indexes by a callback function
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_udiff](https://www.php.net/manual/en/function.array-udiff.php)** Computes the difference of arrays by using a callback function for data comparison
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_uintersect_assoc](https://www.php.net/manual/en/function.array-uintersect-assoc.php)** Computes the intersection of arrays with additional index check, compares data by a callback function
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_uintersect_uassoc](https://www.php.net/manual/en/function.array-uintersect-uassoc.php)** Computes the intersection of arrays with additional index check, compares data and indexes by separate callback functions
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_uintersect](https://www.php.net/manual/en/function.array-uintersect.php)** Computes the intersection of arrays, compares data by a callback function
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_unique](https://www.php.net/manual/en/function.array-unique.php)** Removes duplicate values from an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_unshift](https://www.php.net/manual/en/function.array-unshift.php)** Prepend one or more elements to the beginning of an array
@@ -585,12 +611,12 @@ $collection->values(5, 6, 7, 8); // [1, 2, 3]
 
 **[array_walk_recursive](https://www.php.net/manual/en/function.array-walk-recursive.php)** Apply a user function recursively to every member of an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[array_walk](https://www.php.net/manual/en/function.array-walk.php)** Apply a user supplied function to every member of an array
 ```php
-// Add documentation
+// todo
 ```
 
 ~~**[array](https://www.php.net/manual/en/function.array.php)** Create an array~~
@@ -615,7 +641,7 @@ Collection::instance([5, 4, 3, 2, 1])->sort();
 
 **[compact](https://www.php.net/manual/en/function.compact.php)** Create array containing variables and their values
 ```php
-// Add documentation
+// todo
 ```
 
 **[count](https://www.php.net/manual/en/function.count.php)** Counts all elements in an array or in a Countable object
@@ -630,17 +656,17 @@ $collection->count(); // 3
 
 **[current](https://www.php.net/manual/en/function.current.php)** Return the current element in an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[each](https://www.php.net/manual/en/function.each.php)** Return the current key and value pair from an array and advance the array cursor
 ```php
-// Add documentation
+// todo
 ```
 
 **[end](https://www.php.net/manual/en/function.end.php)** Set the internal pointer of an array to its last element
 ```php
-// Add documentation
+// todo
 ```
 
 **[extract](https://www.php.net/manual/en/function.extract.php)** Import variables into the current symbol table from an array
@@ -689,7 +715,7 @@ $collection->exists('c.z'); // false
 
 **[key](https://www.php.net/manual/en/function.key.php)** Fetch a key from an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[krsort](https://www.php.net/manual/en/function.krsort.php)** Sort an array by key in descending order
@@ -709,7 +735,7 @@ Collection::instance(['a' => 2, 'b' => 2, 'c' => 2, 'd' => 2, 'e' => 2])->sortKe
 
 **[list](https://www.php.net/manual/en/function.list.php)** Assign variables as if they were an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[natcasesort](https://www.php.net/manual/en/function.natcasesort.php)** Sort an array using a case insensitive "natural order" algorithm
@@ -736,17 +762,17 @@ Collection::instance([5, 4, 3, 2, 1])->sortValues(SORT_ASC, false, SORT_NATURAL)
 
 **[next](https://www.php.net/manual/en/function.next.php)** Advance the internal pointer of an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[pos](https://www.php.net/manual/en/function.pos.php)** Alias of current
 ```php
-// Add documentation
+// todo
 ```
 
 **[prev](https://www.php.net/manual/en/function.prev.php)** Rewind the internal array pointer
 ```php
-// Add documentation
+// todo
 ```
 
 **[range](https://www.php.net/manual/en/function.range.php)** Create an array containing a range of elements
@@ -760,7 +786,7 @@ $alphabet = Collection::range('a', 'z');
 
 **[reset](https://www.php.net/manual/en/function.reset.php)** Set the internal pointer of an array to its first element
 ```php
-// Add documentation
+// todo
 ```
 
 **[rsort](https://www.php.net/manual/en/function.rsort.php)** Sort an array in descending order (loses keys)
@@ -774,7 +800,7 @@ Collection::instance([1, 2, 3, 4, 5])->sort()->reverse()->values();
 
 **[shuffle](https://www.php.net/manual/en/function.shuffle.php)** Shuffle an array
 ```php
-// Add documentation
+// todo
 ```
 
 **[sizeof](https://www.php.net/manual/en/function.sizeof.php)** Alias of count

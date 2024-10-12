@@ -208,42 +208,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Compute the difference between other collections or arrays
-     *
-     * Collection|array ...$others
-     *
-     * @return static
-     *
-     * @see array_diff()
-     */
-    public function diff(...$others): self
-    {
-        foreach ($others as $key => $other) {
-            $others[$key] = static::castArray($other);
-        }
-        $other = array_shift($others);
-        return new static(array_diff($this->data, $other, ...$others));
-    }
-
-    /**
-     * Computes the difference between other collections or arrays with additional index check
-     *
-     * @param mixed ...$others
-     *
-     * @return static
-     *
-     * @see array_diff_assoc()
-     */
-    public function diffAssoc(...$others): self
-    {
-        foreach ($others as $key => $other) {
-            $others[$key] = static::castArray($other);
-        }
-        $other = array_shift($others);
-        return new static(array_diff_assoc($this->data, $other, ...$others));
-    }
-
-    /**
      * Computes the difference between other collections or arrays using keys for comparison
      *
      * @param mixed ...$others
@@ -259,6 +223,85 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         }
         $other = array_shift($others);
         return new static(array_diff_key($this->data, $other, ...$others));
+    }
+
+    /**
+     * Computes the difference between other collections or arrays using keys for comparison
+     *
+     * @param callable $key_compare_func
+     * @param mixed ...$others
+     *
+     * @return static
+     *
+     * @see array_diff_key()
+     */
+    public function diffKeysCallback(callable $key_compare_func, ...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $first = array_shift($others);
+        $others[] = $key_compare_func;
+        return new static(array_diff_ukey($this->data, $first, ...$others));
+    }
+
+    /**
+     * Compute the difference between other collections or arrays
+     *
+     * Collection|array ...$others
+     *
+     * @return static
+     *
+     * @see array_diff()
+     */
+    public function diffValues(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $other = array_shift($others);
+        return new static(array_diff($this->data, $other, ...$others));
+    }
+
+    /**
+     * Computes the difference between other collections or arrays with additional index check
+     * Returns a collection of entries in this collection, where the key and value combination are not in others
+     *
+     * @param mixed ...$others
+     *
+     * @return static
+     *
+     * @see array_diff_assoc()
+     */
+    public function diffValuesAndKeys(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $other = array_shift($others);
+        return new static(array_diff_assoc($this->data, $other, ...$others));
+    }
+
+    /**
+     * Computes the difference between other collections or arrays with additional index check
+     * Returns a collection of entries in this collection, where the key and value combination are not in others
+     * Uses a callback to compare the keys
+     *
+     * @param callable $key_compare_func
+     * @param mixed ...$others
+     *
+     * @return static
+     *
+     * @see array_diff_assoc()
+     */
+    public function diffValuesAndKeysCallback(callable $key_compare_func, ...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $first = array_shift($others);
+        $others[] = $key_compare_func;
+        return new static(array_diff_uassoc($this->data, $first, ...$others));
     }
 
     /**

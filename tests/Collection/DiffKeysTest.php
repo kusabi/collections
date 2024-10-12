@@ -23,4 +23,14 @@ class DiffKeysTest extends TestCase
         $this->assertSame(array_diff_key($a, $b, $c, $d), Collection::instance($a)->diffKeys(Collection::instance($b), Collection::instance($c), Collection::instance($d))->array());
         $this->assertSame(array_diff_key($a, $b), Collection::instance($a)->diffKeys(Collection::instance($b))->array());
     }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::diffKeys()
+     */
+    public function testReadmeExamples()
+    {
+        $this->assertSame([1, 2, 3, 4, 5, 6], Collection::instance([1, 2, 3, 4, 5, 6])->diffValuesAndKeys([3, 4, 5])->array());
+
+        $this->assertSame(['a' => 1, 'c' => 3], Collection::instance(['a' => 1, 'b' => 2, 'c' => 3])->diffValuesAndKeys(['a' => 10, 'b' => 2, 'd' => 3])->array());
+    }
 }
