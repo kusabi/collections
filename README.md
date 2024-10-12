@@ -266,27 +266,64 @@ $doubleFlipped = $collection->flip()->flip(); // ['a' => 0, 'b' => 1, 'c' => 2]
 
 **[array_intersect_assoc](https://www.php.net/manual/en/function.array-intersect-assoc.php)** Computes the intersection of arrays with additional index check
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance(['a' => 1, 'b' => 2, 'c' => 3])->intersectValuesAndKeys(['b' => 22, 'c' => 3, 'd' => 44]); // ['c' => 3]
 ```
 
 **[array_intersect_key](https://www.php.net/manual/en/function.array-intersect-key.php)** Computes the intersection of arrays using keys for comparison
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance(['a' => 1, 'b' => 2, 'c' => 3])->intersectKeys(['b' => 22, 'c' => 33, 'd' => 44]); // ['b' => 2, 'c' => 3]
 ```
 
 **[array_intersect_uassoc](https://www.php.net/manual/en/function.array-intersect-uassoc.php)** Computes the intersection of arrays with additional index check, compares indexes by a callback function
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$a = ['alpha' => 1, 'beta' => 2, 'gamma' => 3];
+$b = ['alpha' => 10, 'banana' => 2, 'gamma' => 3];
+
+// Alpha should not match because keys are the same but values are not
+// Beta/banana would not normally match because values are the same but keys are different
+// gamma will match because key and value both match
+
+$key_compare_function = function ($a, $b) {
+    // Take only the first letter of the key
+    $a = substr($a, 0, 1);
+    $b = substr($b, 0, 1);
+    return $a <=> $b;
+};
+
+// because the key compare function only checks the first letter
+// all the keys will match as it will think they are all a, b and c
+// So now...
+// 'a' should not match because keys are the same but values are not
+// 'b' will match because keys and values are the same
+// 'g' will match because keys and values are the same
+Collection::instance($a)->intersectValuesAndKeysCallback($key_compare_function, $b); // ['beta' => 2, 'gamma' => 3]
 ```
 
 **[array_intersect_ukey](https://www.php.net/manual/en/function.array-intersect-ukey.php)** Computes the intersection of arrays using a callback function on the keys for comparison
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance(['a' => 1, 'b' => 2, 'c' => 3, 'z_something' => 50])->intersectKeysCallback(function ($a, $b) {
+    // Take only the first letter of the key
+    $a = substr($a, 0, 1);
+    $b = substr($b, 0, 1);
+    return $a <=> $b;
+}, ['b' => 22, 'c' => 33, 'd' => 44, 'z_else' => 500]); // ['b' => 2, 'c' => 3,  'z_something' => 50]
 ```
 
 **[array_intersect](https://www.php.net/manual/en/function.array-intersect.php)** Computes the intersection of arrays
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance([1, 2, 3, 4, 5])->intersectValues([1, 99, 3, 100, 5]); // [0 => 1, 2 => 3, 4 => 5] Keep keys
+
+Collection::instance([1, 2, 3, 4, 5])->intersectValues([1, 99, 3, 100, 5])->values(); // [1, 3, 5] Reset keys
 ```
 
 **[array_is_list](https://www.php.net/manual/en/function.array-is-list.php)** Checks whether a given array is a list

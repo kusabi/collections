@@ -282,6 +282,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      * Filters elements of the collection using a callback function
      *
      * @param callable|null $callback
+     * @param int $mode
      *
      * @return static
      *
@@ -364,6 +365,102 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function inflate(): self
     {
         return new Collection(array_inflate($this->data));
+    }
+
+    /**
+     * Return a new collection made up of key values from this collection, where the keys also exist in the other arrays or collections
+     *
+     * @param ...$others
+     *
+     * @return static
+     *
+     * @see array_intersect_key()
+     */
+    public function intersectKeys(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $first = array_shift($others);
+        return new static(array_intersect_key($this->data, $first, ...$others));
+    }
+
+    /**
+     * Return a new collection made up of key values from this collection, where the keys also exist in the other arrays or collections
+     * Uses a callback to decide if the keys are equal
+     *
+     * @param callable $callback
+     * @param ...$others
+     *
+     * @return static
+     *
+     * @see array_intersect_ukey()
+     */
+    public function intersectKeysCallback(callable $callback, ...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $first = array_shift($others);
+        $others[] = $callback;
+        return new static(array_intersect_ukey($this->data, $first, ...$others));
+    }
+
+    /**
+     * Return a new collection made up of key values from this collection, where the value also exist in the other arrays or collections
+     *
+     * @param ...$others
+     *
+     * @return static
+     *
+     * @see array_intersect()
+     */
+    public function intersectValues(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $first = array_shift($others);
+        return new static(array_intersect($this->data, $first, ...$others));
+    }
+
+    /**
+     * Return a new collection made up of key values from this collection, where the key/value combination also exist in the other arrays or collections
+     *
+     * @param ...$others
+     *
+     * @return static
+     *
+     * @see array_intersect_assoc()
+     */
+    public function intersectValuesAndKeys(...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $first = array_shift($others);
+        return new static(array_intersect_assoc($this->data, $first, ...$others));
+    }
+
+    /**
+     * Return a new collection made up of key values from this collection, where the key/value combination also exist in the other arrays or collections
+     * Uses a callback to determine if keys match
+     *
+     * @param callable $key_compare_func
+     * @param ...$others
+     *
+     * @return static
+     *
+     * @see array_intersect_uassoc()
+     */
+    public function intersectValuesAndKeysCallback(callable $key_compare_func, ...$others): self
+    {
+        foreach ($others as $key => $other) {
+            $others[$key] = static::castArray($other);
+        }
+        $first = array_shift($others);
+        $others[] = $key_compare_func;
+        return new static(array_intersect_uassoc($this->data, $first, ...$others));
     }
 
     /**
@@ -726,8 +823,8 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function unshift(...$values): self
     {
-        /** @phan-suppress-next-line PhanParamTooFewInternalUnpack */
-        array_unshift($this->data, ...$values);
+        $first = array_shift($values);
+        array_unshift($this->data, $first, ...$values);
         return $this;
     }
 

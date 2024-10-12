@@ -10,9 +10,24 @@ class IsListTest extends TestCase
     /**
      * @covers \Kusabi\Collection\Collection::isList()
      */
-    public function testIsList()
+    public function testIsListEmpty()
+    {
+        $this->assertSame(true, Collection::instance()->isList());
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::isList()
+     */
+    public function testIsListHasMap()
+    {
+        $this->assertSame(false, Collection::instance(['a' => 1])->isList());
+    }
+
+    /**
+     * @covers \Kusabi\Collection\Collection::isList()
+     */
+    public function testIsListList()
     {
         $this->assertSame(true, Collection::range(0, 100)->isList());
-        $this->assertSame(false, Collection::instance(['a' => 1])->isList());
     }
 }
