@@ -21,19 +21,6 @@ jobs:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
 
-      # Restore the composer cache folders to speed up the composer update
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
       # Check out the code
       - name: Checkout code
         uses: actions/checkout@v2
@@ -44,7 +31,13 @@ jobs:
 
       # Run unit tests with code coverage
       - name: Run phpunit
-        run: vendor/bin/phpunit --coverage-clover=coverage/coverage.xml || vendor/bin/phpunit --migrate-configuration --coverage-clover=coverage/coverage.xml
+        if: ${{ matrix.php-version <= '8.0' }}
+        run: vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage/coverage.xml
+
+      # Run unit tests with code coverage
+      - name: Run phpunit
+        if: ${{ matrix.php-version > '8.0' }}
+        run: vendor/bin/phpunit --configuration phpunit-10.xml --coverage-clover=coverage/coverage.xml
 
       # Upload the code coverage artifact
       - name: Upload code coverage artifact
@@ -62,19 +55,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.2'
-
-      # Restore the composer cache folders to speed up the composer update
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-php-7.2-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
 
       # Check out the code
       - name: Checkout code

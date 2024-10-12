@@ -1,6 +1,6 @@
 <phpunit bootstrap="vendor/autoload.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" forceCoversAnnotation="true">
     <testsuites>
-        <testsuite name="functions">
+        <testsuite name="unit">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

@@ -333,6 +333,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see IteratorAggregate::getIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->data);
@@ -482,6 +483,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see ArrayAccess::offsetGet
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return array_get($this->data, $offset);
@@ -492,6 +494,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see ArrayAccess::offsetSet
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if ($offset === null) {
@@ -506,6 +509,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see ArrayAccess::offsetUnset
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         array_unset($this->data, $offset);
