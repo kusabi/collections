@@ -561,12 +561,19 @@ $collection->values(5, 6, 7, 8); // [1, 2, 3]
 
 **[arsort](https://www.php.net/manual/en/function.arsort.php)** Sort an array in descending order and maintain index association
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance([1, 2, 3, 4, 5])->sortValues(SORT_DESC);
+Collection::instance([1, 2, 3, 4, 5])->sortValues()->reverse();
+Collection::instance([1, 2, 3, 4, 5])->sort()->reverse();
 ```
 
 **[asort](https://www.php.net/manual/en/function.asort.php)** Sort an array in ascending order and maintain index association
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance([5, 4, 3, 2, 1])->sortValues();
+Collection::instance([5, 4, 3, 2, 1])->sort();
 ```
 
 **[compact](https://www.php.net/manual/en/function.compact.php)** Create array containing variables and their values
@@ -650,12 +657,17 @@ $collection->exists('c.z'); // false
 
 **[krsort](https://www.php.net/manual/en/function.krsort.php)** Sort an array by key in descending order
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance(['a' => 2, 'b' => 2, 'c' => 2, 'd' => 2, 'e' => 2])->sortKeys(SORT_DESC);
+Collection::instance(['a' => 2, 'b' => 2, 'c' => 2, 'd' => 2, 'e' => 2])->sortKeys()->reverse();
 ```
 
 **[ksort](https://www.php.net/manual/en/function.ksort.php)** Sort an array by key in ascending order
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance(['a' => 2, 'b' => 2, 'c' => 2, 'd' => 2, 'e' => 2])->sortKeys();
 ```
 
 **[list](https://www.php.net/manual/en/function.list.php)** Assign variables as if they were an array
@@ -665,12 +677,24 @@ $collection->exists('c.z'); // false
 
 **[natcasesort](https://www.php.net/manual/en/function.natcasesort.php)** Sort an array using a case insensitive "natural order" algorithm
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+// Keep keys
+Collection::instance([5, 4, 3, 2, 1])->sortValues(SORT_ASC, true, SORT_NATURAL | SORT_FLAG_CASE);
+
+// Lose keys
+Collection::instance([5, 4, 3, 2, 1])->sortValues(SORT_ASC, false, SORT_NATURAL | SORT_FLAG_CASE);
 ```
 
 **[natsort](https://www.php.net/manual/en/function.natsort.php)** Sort an array using a "natural order" algorithm
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+// Keep keys
+Collection::instance([5, 4, 3, 2, 1])->sortValues(SORT_ASC, true, SORT_NATURAL);
+
+// Lose keys
+Collection::instance([5, 4, 3, 2, 1])->sortValues(SORT_ASC, false, SORT_NATURAL);
 ```
 
 **[next](https://www.php.net/manual/en/function.next.php)** Advance the internal pointer of an array
@@ -702,9 +726,13 @@ $alphabet = Collection::range('a', 'z');
 // Add documentation
 ```
 
-**[rsort](https://www.php.net/manual/en/function.rsort.php)** Sort an array in descending order
+**[rsort](https://www.php.net/manual/en/function.rsort.php)** Sort an array in descending order (loses keys)
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance([1, 2, 3, 4, 5])->sortValues(SORT_DESC, false);
+Collection::instance([1, 2, 3, 4, 5])->sortValues(SORT_ASC, false)->reverse();
+Collection::instance([1, 2, 3, 4, 5])->sort()->reverse()->values();
 ```
 
 **[shuffle](https://www.php.net/manual/en/function.shuffle.php)** Shuffle an array
@@ -722,22 +750,38 @@ count($collection); // 3
 $collection->count(); // 3
 ```
 
-**[sort](https://www.php.net/manual/en/function.sort.php)** Sort an array in ascending order
+**[sort](https://www.php.net/manual/en/function.sort.php)** Sort an array in ascending order (loses keys)
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+Collection::instance([5, 4, 3, 2, 1])->sortValues(SORT_ASC, false);
+Collection::instance([5, 4, 3, 2, 1])->sort()->values();
 ```
 
 **[uasort](https://www.php.net/manual/en/function.uasort.php)** Sort an array with a user-defined comparison function and maintain index association
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([5, 4, 3, 2, 1]);
+$collection->sortValuesCallback(function ($a, $b) {
+    return $a <=> $b;
+});
 ```
 
 **[uksort](https://www.php.net/manual/en/function.uksort.php)** Sort an array by keys using a user-defined comparison function
 ```php
-// Add documentation
+$collection = new Collection(['e' => 2, 'd' => 2, 'c' => 2, 'b' => 2, 'a' => 2]);
+$collection->sortKeysCallback(function ($a, $b) {
+    return $a <=> $b;
+});
 ```
 
-**[usort](https://www.php.net/manual/en/function.usort.php)** Sort an array by values using a user-defined comparison function
+**[usort](https://www.php.net/manual/en/function.usort.php)** Sort an array by values using a user-defined comparison function (loses keys)
 ```php
-// Add documentation
+use Kusabi\Collection\Collection;
+
+$collection = new Collection([5, 4, 3, 2, 1]);
+$collection->sortValuesCallback(function ($a, $b) {
+    return $a <=> $b;
+}, false);
 ```

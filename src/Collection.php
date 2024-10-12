@@ -605,6 +605,101 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Sort the array by values, either ascending or with a callback
+     *
+     * @param callable|null $callback
+     *
+     * @return static
+     *
+     * @see Collection::sortValues()
+     * @see Collection::sortValuesCallback()
+     */
+    public function sort(?callable $callback = null): self
+    {
+        return $callback === null ? $this->sortValues() : $this->sortValuesCallback($callback);
+    }
+
+    /**
+     * Sort the collections keys
+     *
+     * @param int $order
+     * @param int $flags
+     *
+     * @return static
+     *
+     * @see ksort()
+     * @see krsort()
+     */
+    public function sortKeys(int $order = SORT_ASC, int $flags = SORT_REGULAR): self
+    {
+        if ($order === SORT_ASC) {
+            ksort($this->data, $flags);
+        } else {
+            krsort($this->data, $flags);
+        }
+        return $this;
+    }
+
+    /**
+     * Sort the array keys using a callback
+     *
+     * @return static
+     *
+     * @see uksort()
+     */
+    public function sortKeysCallback(callable $callback): self
+    {
+        uksort($this->data, $callback);
+        return $this;
+    }
+
+    /**
+     * Sort the collections values
+     *
+     * @param int $order
+     * @param bool $keepKeys
+     * @param int $flags
+     *
+     * @return self
+     *
+     * @see sort()
+     * @see asort()
+     * @see rsort()
+     * @see arsort()
+     */
+    public function sortValues(int $order = SORT_ASC, bool $keepKeys = true, int $flags = SORT_REGULAR): self
+    {
+        if ($order === SORT_ASC && $keepKeys) {
+            asort($this->data, $flags);
+        } elseif ($order === SORT_ASC && !$keepKeys) {
+            sort($this->data, $flags);
+        } elseif ($order === SORT_DESC && $keepKeys) {
+            arsort($this->data, $flags);
+        } else {
+            rsort($this->data, $flags);
+        }
+        return $this;
+    }
+
+    /**
+     * Sort the array values using a callback
+     *
+     * @return static
+     *
+     * @see usort()
+     * @see uasort()
+     */
+    public function sortValuesCallback(callable $callback, bool $keepKeys = true): self
+    {
+        if ($keepKeys) {
+            uasort($this->data, $callback);
+        } else {
+            usort($this->data, $callback);
+        }
+        return $this;
+    }
+
+    /**
      * Returns the sum of values as an integer or float; 0 if the array is empty.
      *
      * @return int|float
